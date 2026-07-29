@@ -167,15 +167,90 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
 
 
 {showForm && (
-<div style={{
-padding: '16px', marginBottom: '24px',
-background: 'white', borderRadius: '8px', border: '1px solid #bfdbfe'
-}}>
-<p style={{ margin: '0 0 12px', fontWeight: 600, color: '#1e293b' }}>Nuevo empleado</p>
-<div style={{
-display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-gap: '12px', marginBottom: '16px'
-}}>
+  <div
+    style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      background: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1000,
+    }}
+  >
+   <div
+  style={{
+    background: 'white',
+    borderRadius: '18px',
+    padding: '24px',
+    width: '75%',
+    maxWidth: '700px',
+    maxHeight: '90vh',
+    overflowY: 'auto',
+    border: '1px solid #bfdbfe',
+    boxShadow: '0 20px 60px rgba(0,0,0,0.20)',
+  }}
+>
+<div
+  style={{
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '24px',
+    paddingBottom: '16px',
+    borderBottom: '1px solid #e2e8f0',
+  }}
+>
+  <div>
+    <h2
+      style={{
+        margin: 0,
+        color: '#1e293b',
+        fontSize: '24px',
+      }}
+    >
+      👤 Nuevo empleado
+    </h2>
+
+    <p
+      style={{
+        margin: '6px 0 0',
+        color: '#64748b',
+        fontSize: '14px',
+      }}
+    >
+      Complete la información del colaborador.
+    </p>
+  </div>
+
+  <button
+    onClick={() => setShowForm(false)}
+    style={{
+      width: '38px',
+      height: '38px',
+      borderRadius: '50%',
+      border: 'none',
+      background: '#f1f5f9',
+      color: '#475569',
+      fontSize: '20px',
+      cursor: 'pointer',
+      transition: '0.2s',
+    }}
+  >
+    ✕
+  </button>
+</div>
+<div
+  style={{
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '18px',
+    marginTop: '20px',
+  }}
+>
 
 
 <FormField label="Nombre *">
@@ -326,19 +401,27 @@ gap: '12px', marginBottom: '16px'
     style={formFieldStyle}
   />
 </FormField>
-
 </div>
 
-<div style={{ display: 'flex', gap: '8px' }}>
+<div
+  style={{
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: '12px',
+    marginTop: '24px',
+  }}
+>
   <button
     onClick={handleAddEmployee}
     style={{
-      padding: '8px 16px',
-      background: '#16a34a',
+      padding: '10px 20px',
+      background: '#2563eb',
       color: 'white',
       border: 'none',
-      borderRadius: '6px',
-      cursor: 'pointer'
+      borderRadius: '10px',
+      cursor: 'pointer',
+      fontWeight: 600,
+      boxShadow: '0 6px 18px rgba(37,99,235,.35)',
     }}
   >
     Guardar
@@ -347,22 +430,23 @@ gap: '12px', marginBottom: '16px'
   <button
     onClick={() => setShowForm(false)}
     style={{
-      padding: '8px 16px',
-      background: '#e2e8f0',
-      color: '#475569',
-      border: 'none',
-      borderRadius: '6px',
-      cursor: 'pointer'
+      padding: '10px 20px',
+      background: '#f8fafc',
+      color: '#334155',
+      border: '1px solid #cbd5e1',
+      borderRadius: '10px',
+      cursor: 'pointer',
     }}
   >
     Cancelar
-  </button>
+   </button>
+</div>
+
 </div>
 
 </div>
 
 )}
-
 
 {/* Barra de filtros */}
 <div
