@@ -34,67 +34,29 @@ function LoginPage() {
     }
   };
 
-  return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#f8fafc',
-      }}
-    >
-      <div
-        style={{
-          background: 'white',
-          padding: '40px',
-          borderRadius: '12px',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
-          width: '100%',
-          maxWidth: '400px',
-        }}
-      >
+    return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
+        
         {/* Encabezado */}
-        <div
-          style={{
-            textAlign: 'center',
-            marginBottom: '32px',
-          }}
-        >
-          <span style={{ fontSize: '48px' }}>👤</span>
+        <div className="text-center mb-8">
+          <span className="text-5xl block mb-3">👤</span>
 
-          <h1
-            style={{
-              margin: '8px 0 4px',
-              color: '#1e293b',
-            }}
-          >
+          <h1 className="text-2xl font-bold text-slate-900">
             Mini RRHH
           </h1>
 
-          <p
-            style={{
-              margin: 0,
-              color: '#64748b',
-            }}
-          >
+          <p className="text-slate-500 mt-1">
             Inicia sesión para continuar
           </p>
         </div>
 
         {/* Formulario */}
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} className="space-y-5">
 
           {/* Correo */}
-          <div style={{ marginBottom: '16px' }}>
-            <label
-              style={{
-                display: 'block',
-                marginBottom: '4px',
-                fontSize: '14px',
-                fontWeight: 500,
-              }}
-            >
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Correo electrónico
             </label>
 
@@ -104,27 +66,13 @@ function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="admin@empresa.com"
               required
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                border: '1px solid #e2e8f0',
-                borderRadius: '6px',
-                fontSize: '14px',
-                boxSizing: 'border-box',
-              }}
+              className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
           {/* Contraseña */}
-          <div style={{ marginBottom: '24px' }}>
-            <label
-              style={{
-                display: 'block',
-                marginBottom: '4px',
-                fontSize: '14px',
-                fontWeight: 500,
-              }}
-            >
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Contraseña
             </label>
 
@@ -134,29 +82,13 @@ function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="****"
               required
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                border: '1px solid #e2e8f0',
-                borderRadius: '6px',
-                fontSize: '14px',
-                boxSizing: 'border-box',
-              }}
+              className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
           {/* Mensaje de error */}
           {error && (
-            <div
-              style={{
-                background: '#fee2e2',
-                color: '#dc2626',
-                padding: '10px 12px',
-                borderRadius: '6px',
-                marginBottom: '16px',
-                fontSize: '13px',
-              }}
-            >
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}
@@ -164,32 +96,16 @@ function LoginPage() {
           {/* Botón */}
           <button
             type="submit"
-            style={{
-              width: '100%',
-              padding: '12px',
-              background: '#1e40af',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '15px',
-              fontWeight: 600,
-            }}
+            className="w-full py-3 bg-brand-800 hover:bg-brand-700 text-white font-semibold rounded-lg transition-colors"
           >
             Iniciar sesión
           </button>
         </form>
 
-        <p
-          style={{
-            marginTop: '16px',
-            fontSize: '12px',
-            color: '#94a3b8',
-            textAlign: 'center',
-          }}
-        >
+        <p className="mt-4 text-xs text-slate-400 text-center">
           Demo: admin@empresa.com / admin123
         </p>
+
       </div>
     </div>
   );

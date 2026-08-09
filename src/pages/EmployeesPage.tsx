@@ -13,6 +13,8 @@ import EmployeeCard from '../components/EmployeeCard';
 import StatsBadge from '../components/StatsBadge';
 import FormField from '../components/FormField';
 
+
+
 function EmployeesPage() {
 
   // Estado de la lista completa (simulando datos del servidor)
@@ -41,6 +43,9 @@ const [newStatus, setNewStatus] = useState<EmployeeStatus>('active');
 const [newRole, setNewRole] = useState<EmployeeRole>('employee');
 const [newPhone, setNewPhone] = useState<string>('');
 const [newAvatarUrl, setNewAvatarUrl] = useState<string>('');
+const [guardarHover, setGuardarHover] = useState(false);
+const [cancelarHover, setCancelarHover] = useState(false);
+const [attemptedSubmit, setAttemptedSubmit] = useState(false);
 
 // Simular carga de datos (en clases siguientes conectaremos la API real)
 useEffect(() => {
@@ -84,7 +89,7 @@ setEmployees(prev => prev.filter(emp => emp.id !== id));
 
 // Handler para agregar empleado
 const handleAddEmployee = useCallback(() => {
-if (!newName.trim() || !newEmail.trim() || !newPosition.trim() || !newHireDate) return;
+if (!newName.trim() || !newEmail.trim() || !newPosition.trim() || !newHireDate || !newSalary.trim()) return;
 const newEmployee: Employee = {
 id: Date.now(), // ID temporal
 name: newName.trim(),
@@ -127,43 +132,63 @@ employee: 'Empleado',
 hr: 'Recursos Humanos',
 admin: 'Administrador',
 };
-const formFieldStyle = {
-padding: '8px 12px', border: '1px solid #cbd5e1',
-borderRadius: '6px', fontSize: '14px', color: '#1e293b', background: 'white', width: '100%',
-boxSizing: 'border-box' as const,
-};
+
+const formFieldClass =
+  'w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent';
 
 
 
 return (
 <div style={{ padding: '24px' }}>
 {/* Encabezado */}
-<div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-<div>
-<h2 style={{ margin: 0, color: '#1e293b' }}>Gestión de Empleados</h2>
-<p style={{ margin: '4px 0 0', color: '#64748b' }}>
-{filteredEmployees.length} de {employees.length} empleados
-</p>
+<div className="mb-6 flex justify-between items-start">
+  <div>
+    <h2 className="text-2xl font-bold text-slate-900">
+      Gestión de Empleados
+    </h2>
+
+    <p className="text-slate-500 mt-1">
+      {filteredEmployees.length} de {employees.length} empleados
+    </p>
+  </div>
+
+  <button
+    onClick={() => setShowForm(!showForm)}
+    className="px-4 py-2 bg-brand-800 hover:bg-brand-700 text-white rounded-lg text-sm font-medium transition-colors"
+  >
+    + Agregar empleado
+  </button>
 </div>
-<button
-onClick={() => setShowForm(!showForm)}
-style={{
-padding: '8px 16px', background: '#1e40af', color: 'white',
-border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
-}}
->
-+ Agregar empleado
-</button>
-</div>
+
 
 
 {/* Estadísticas */}
-<div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
-<StatsBadge label="Total de empleados" value={totalEmployees} color="#2563eb" />
-<StatsBadge label="Empleados activos" value={activeEmployees} color="#16a34a" />
-<StatsBadge label="Empleados en permiso" value={onLeaveEmployees} color="#ca8a04" />
-<StatsBadge label="Empleados inactivos" value={inactiveEmployees} color="#d44444" />
+<div className="flex flex-wrap gap-4 mb-6">
+  <StatsBadge
+    label="Total de empleados"
+    value={totalEmployees}
+    variant="blue"
+  />
+
+  <StatsBadge
+    label="Empleados activos"
+    value={activeEmployees}
+    variant="green"
+  />
+
+  <StatsBadge
+    label="Empleados en permiso"
+    value={onLeaveEmployees}
+    variant="yellow"
+  />
+
+  <StatsBadge
+    label="Empleados inactivos"
+    value={inactiveEmployees}
+    variant="red"
+  />
 </div>
+
 
 
 {showForm && (
@@ -227,7 +252,7 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
   </div>
 
   <button
-    onClick={() => setShowForm(false)}
+   onClick={() => setShowForm(false)}
     style={{
       width: '38px',
       height: '38px',
@@ -242,7 +267,9 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
   >
     ✕
   </button>
-</div>
+
+    </div>
+
 <div
   style={{
     display: 'grid',
@@ -251,6 +278,7 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
     marginTop: '20px',
   }}
 >
+  
 
 
 <FormField label="Nombre *">
@@ -260,9 +288,9 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
     onChange={(e) => setNewName(e.target.value)}
     placeholder="Ej. Juan Pérez"
     autoFocus
-    style={formFieldStyle}
+    className={formFieldClass}
   />
-</FormField>
+ </FormField>
 
 
 <FormField label="Email *">
@@ -271,9 +299,9 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
     value={newEmail}
     onChange={(e) => setNewEmail(e.target.value)}
     placeholder="juan.perez@empresa.com"
-    style={formFieldStyle}
+   className={formFieldClass}
   />
-</FormField>
+   </FormField>
 
 
 
@@ -283,7 +311,7 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
     value={newPosition}
     onChange={(e) => setNewPosition(e.target.value)}
     placeholder="Ej. Analista de Ventas"
-    style={formFieldStyle}
+    className={formFieldClass}
   />
 </FormField>
 
@@ -295,7 +323,7 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
   <select
     value={newDepartment}
     onChange={(e) => setNewDepartment(e.target.value as Department)}
-    style={formFieldStyle}
+    className={formFieldClass}
   >
     {departments.map(dept => (
       <option key={dept} value={dept}>
@@ -316,9 +344,10 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
     value={newSalary}
     onChange={(e) => setNewSalary(e.target.value)}
     placeholder="Ej. 8500"
-    style={formFieldStyle}
+    className={formFieldClass}
   />
 </FormField>
+
 
 
 
@@ -330,7 +359,7 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
     type="date"
     value={newHireDate}
     onChange={(e) => setNewHireDate(e.target.value)}
-    style={formFieldStyle}
+    className={formFieldClass}
   />
 </FormField>
 
@@ -341,7 +370,7 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
   <select
     value={newStatus}
     onChange={(e) => setNewStatus(e.target.value as EmployeeStatus)}
-    style={formFieldStyle}
+    className={formFieldClass}
   >
     {statuses.map(status => (
       <option key={status} value={status}>
@@ -360,7 +389,7 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
   <select
     value={newRole}
     onChange={(e) => setNewRole(e.target.value as EmployeeRole)}
-    style={formFieldStyle}
+    className={formFieldClass}
   >
     {roles.map(role => (
       <option key={role} value={role}>
@@ -382,7 +411,7 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
     value={newPhone}
     onChange={(e) => setNewPhone(e.target.value)}
     placeholder="Ej. 5555-5555"
-    style={formFieldStyle}
+    className={formFieldClass}
   />
 </FormField>
 
@@ -398,7 +427,7 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
     value={newAvatarUrl}
     onChange={(e) => setNewAvatarUrl(e.target.value)}
     placeholder="https://..."
-    style={formFieldStyle}
+    className={formFieldClass}
   />
 </FormField>
 </div>
@@ -412,39 +441,56 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
   }}
 >
   <button
-    onClick={handleAddEmployee}
-    style={{
-      padding: '10px 20px',
-      background: '#2563eb',
-      color: 'white',
-      border: 'none',
-      borderRadius: '10px',
-      cursor: 'pointer',
-      fontWeight: 600,
-      boxShadow: '0 6px 18px rgba(37,99,235,.35)',
-    }}
-  >
-    Guardar
-  </button>
+  onClick={handleAddEmployee}
+  onMouseEnter={() => setGuardarHover(true)}
+  onMouseLeave={() => setGuardarHover(false)}
+  style={{
+    padding: '11px 24px',
+    background: guardarHover ? '#1d4ed8' : '#2563eb',
+    color: 'white',
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontWeight: 600,
+    fontSize: '14px',
+    boxShadow: guardarHover
+      ? '0 8px 20px rgba(37,99,235,.45)'
+      : '0 4px 12px rgba(37,99,235,.25)',
+    transform: guardarHover ? 'translateY(-1px)' : 'translateY(0)',
+    transition: 'all 0.15s ease',
+  }}
+>
+  Guardar
+</button>
 
-  <button
-    onClick={() => setShowForm(false)}
-    style={{
-      padding: '10px 20px',
-      background: '#f8fafc',
-      color: '#334155',
-      border: '1px solid #cbd5e1',
-      borderRadius: '10px',
-      cursor: 'pointer',
-    }}
-  >
-    Cancelar
-   </button>
+<button
+  onClick={() => setShowForm(false)}
+  onMouseEnter={() => setCancelarHover(true)}
+  onMouseLeave={() => setCancelarHover(false)}
+  style={{
+    padding: '11px 24px',
+    background: cancelarHover ? '#e2e8f0' : '#f8fafc',
+    color: '#334155',
+    border: '1px solid #cbd5e1',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontWeight: 500,
+    fontSize: '14px',
+    transform: cancelarHover ? 'translateY(-1px)' : 'translateY(0)',
+    transition: 'all 0.15s ease',
+  }}
+>
+  Cancelar
+</button>
 </div>
 
 </div>
 
 </div>
+
+
+
+
 
 )}
 
@@ -462,25 +508,31 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
     border: '1px solid #e2e8f0'
   }}
 >
-<FormField label="Buscar" style={{ flex: '1', minWidth: '220px' }}>
+<FormField
+  label="Buscar"
+  className="flex-1 min-w-[220px]"
+>
   <input
     type="text"
     placeholder="Buscar por nombre, email o cargo..."
     value={search}
     onChange={(e) => setSearch(e.target.value)}
-    style={formFieldStyle}
+    className={formFieldClass}
   />
 </FormField>
 
 
 {/* Filtro por departamento */}
-<FormField label="Departamento" style={{ minWidth: '180px' }}>
+<FormField
+  label="Departamento"
+  className="min-w-[180px]"
+>
   <select
     value={selectedDepartment}
     onChange={(e) =>
       setSelectedDepartment(e.target.value as Department | '')
     }
-    style={formFieldStyle}
+    className={formFieldClass}
   >
     <option value="">Todos los departamentos</option>
     {departments.map((dept) => (
@@ -493,13 +545,16 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
 
 
 {/* Filtro por estado */}
-<FormField label="Estado" style={{ minWidth: '160px' }}>
+<FormField
+  label="Estado"
+  className="min-w-[160px]"
+>
   <select
     value={selectedStatus}
     onChange={(e) =>
       setSelectedStatus(e.target.value as EmployeeStatus | '')
     }
-    style={formFieldStyle}
+    className={formFieldClass}
   >
     <option value="">Todos los estados</option>
     {statuses.map((status) => (
@@ -513,39 +568,39 @@ border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
 
 {/* Botón limpiar filtros */}
 {(search || selectedDepartment || selectedStatus) && (
-<button
-onClick={() => { setSearch(''); setSelectedDepartment(''); setSelectedStatus(''); }}
-style={{
-padding: '8px 12px', background: '#fee2e2', color: '#dc2626',
-border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px'
-}}
->
-Limpiar filtros
-</button>
+  <button
+    onClick={() => {
+      setSearch('');
+      setSelectedDepartment('');
+      setSelectedStatus('');
+    }}
+    className="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg text-sm transition-colors"
+  >
+    Limpiar filtros
+  </button>
 )}
 </div>
-
-
 {/* Estado de carga */}
 {loading && (
-<div style={{ textAlign: 'center', padding: '48px', color: '#64748b' }}>
-<p>Cargando empleados...</p>
-</div>
+  <div
+    style={{
+      textAlign: 'center',
+      padding: '48px',
+      color: '#64748b',
+    }}
+  >
+    Cargando empleados...
+  </div>
 )}
-{/* Sin resultados */}
-{!loading && filteredEmployees.length === 0 && (
-<div style={{ textAlign: 'center', padding: '48px', color: '#64748b' }}>
-<p>No se encontraron empleados con los filtros aplicados.</p>
-</div>
-)}
-
-
 
 {/* Lista de empleados */}
 {!loading && filteredEmployees.length > 0 && (
   <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-    {filteredEmployees.map(employee => (
-      <div key={employee.id} style={{ position: 'relative' }}>
+    {filteredEmployees.map((employee) => (
+      <div
+        key={employee.id}
+        style={{ position: 'relative' }}
+      >
         <button
           onClick={() => handleDeleteEmployee(employee.id)}
           aria-label="Eliminar empleado"
@@ -567,7 +622,7 @@ Limpiar filtros
             boxShadow: '0 1px 3px rgba(0,0,0,0.25)',
           }}
         >
-          ×
+          X
         </button>
 
         <EmployeeCard
@@ -578,7 +633,8 @@ Limpiar filtros
     ))}
   </div>
 )}
-</div>
+
+  </div>
 );
 }
 

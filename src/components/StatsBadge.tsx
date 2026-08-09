@@ -1,37 +1,48 @@
 interface StatsBadgeProps {
-    label: string;
-    value: number;
-    color?: string;
+  label: string;
+  value: number;
+  variant?: 'blue' | 'green' | 'yellow' | 'red';
 }
 
-function StatsBadge({ label, value, color = "#2563eb" }: StatsBadgeProps) {
+const variantConfig = {
+  blue: {
+    border: 'border-blue-600',
+    text: 'text-blue-600',
+  },
+  green: {
+    border: 'border-green-600',
+    text: 'text-green-600',
+  },
+  yellow: {
+    border: 'border-yellow-600',
+    text: 'text-yellow-600',
+  },
+  red: {
+    border: 'border-red-500',
+    text: 'text-red-500',
+  },
+};
 
-   return (
+function StatsBadge({
+  label,
+  value,
+  variant = 'blue',
+}: StatsBadgeProps) {
+  const style = variantConfig[variant];
+
+  return (
     <div
-        style={{
-            border: `2px solid ${color}`,
-            borderRadius: "10px",
-            padding: "16px",
-            width: "180px",
-            textAlign: "center"
-        }}
+      className={`flex flex-col items-center px-5 py-3 rounded-lg bg-white border min-w-[120px] ${style.border}`}
     >
-        <h2 style={{ color, margin: 0 }}>
-            {value}
-        </h2>
+      <span className={`text-2xl font-bold ${style.text}`}>
+        {value}
+      </span>
 
-        <p
-            style={{
-            marginTop: "10px",
-            color: "#64748b",
-            fontSize: "14px",
-            }}
-        >
-            {label}
-        </p>
+      <span className="text-sm text-slate-500">
+        {label}
+      </span>
     </div>
-);
-
+  );
 }
 
 export default StatsBadge;
