@@ -192,92 +192,29 @@ return (
 
 
 {showForm && (
-  <div
-    style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      background: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1000,
-    }}
-  >
-   <div
-  style={{
-    background: 'white',
-    borderRadius: '18px',
-    padding: '24px',
-    width: '75%',
-    maxWidth: '700px',
-    maxHeight: '90vh',
-    overflowY: 'auto',
-    border: '1px solid #bfdbfe',
-    boxShadow: '0 20px 60px rgba(0,0,0,0.20)',
-  }}
->
-<div
-  style={{
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '24px',
-    paddingBottom: '16px',
-    borderBottom: '1px solid #e2e8f0',
-  }}
->
-  <div>
-    <h2
-      style={{
-        margin: 0,
-        color: '#1e293b',
-        fontSize: '24px',
-      }}
-    >
-      👤 Nuevo empleado
-    </h2>
+  <div className="fixed inset-0 w-full h-full bg-black/50 flex justify-center items-center z-[1000]">
+  <div className="bg-white rounded-[18px] p-6 w-3/4 max-w-[700px] max-h-[90vh] overflow-y-auto border border-slate-200 shadow-[0_20px_60px_rgba(0,0,0,0.20)]">
+<div className="flex justify-between items-center mb-6 pb-4 border-b border-slate-200">
+<div>
+  <h2 className="m-0 text-slate-800 text-2xl">
+    👤 Nuevo empleado
+  </h2>
 
-    <p
-      style={{
-        margin: '6px 0 0',
-        color: '#64748b',
-        fontSize: '14px',
-      }}
-    >
-      Complete la información del colaborador.
-    </p>
-  </div>
+  <p className="mt-1.5 text-slate-500 text-sm">
+    Complete la información del colaborador.
+  </p>
+</div>
 
-  <button
-   onClick={() => setShowForm(false)}
-    style={{
-      width: '38px',
-      height: '38px',
-      borderRadius: '50%',
-      border: 'none',
-      background: '#f1f5f9',
-      color: '#475569',
-      fontSize: '20px',
-      cursor: 'pointer',
-      transition: '0.2s',
-    }}
-  >
-    ✕
-  </button>
+<button
+  onClick={() => setShowForm(false)}
+  className="w-[38px] h-[38px] rounded-full border-none bg-slate-100 text-slate-600 text-xl cursor-pointer transition duration-200"
+>
+  ×
+</button>
 
     </div>
 
-<div
-  style={{
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '18px',
-    marginTop: '20px',
-  }}
->
+<div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
   
 
 
@@ -432,56 +369,20 @@ return (
 </FormField>
 </div>
 
-<div
-  style={{
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gap: '12px',
-    marginTop: '24px',
-  }}
->
+<div className="flex gap-2">
   <button
-  onClick={handleAddEmployee}
-  onMouseEnter={() => setGuardarHover(true)}
-  onMouseLeave={() => setGuardarHover(false)}
-  style={{
-    padding: '11px 24px',
-    background: guardarHover ? '#1d4ed8' : '#2563eb',
-    color: 'white',
-    border: 'none',
-    borderRadius: '10px',
-    cursor: 'pointer',
-    fontWeight: 600,
-    fontSize: '14px',
-    boxShadow: guardarHover
-      ? '0 8px 20px rgba(37,99,235,.45)'
-      : '0 4px 12px rgba(37,99,235,.25)',
-    transform: guardarHover ? 'translateY(-1px)' : 'translateY(0)',
-    transition: 'all 0.15s ease',
-  }}
->
-  Guardar
-</button>
+    onClick={handleAddEmployee}
+    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+  >
+    Guardar
+  </button>
 
-<button
-  onClick={() => setShowForm(false)}
-  onMouseEnter={() => setCancelarHover(true)}
-  onMouseLeave={() => setCancelarHover(false)}
-  style={{
-    padding: '11px 24px',
-    background: cancelarHover ? '#e2e8f0' : '#f8fafc',
-    color: '#334155',
-    border: '1px solid #cbd5e1',
-    borderRadius: '10px',
-    cursor: 'pointer',
-    fontWeight: 500,
-    fontSize: '14px',
-    transform: cancelarHover ? 'translateY(-1px)' : 'translateY(0)',
-    transition: 'all 0.15s ease',
-  }}
->
-  Cancelar
-</button>
+  <button
+    onClick={() => setShowForm(false)}
+    className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-lg transition-colors"
+  >
+    Cancelar
+  </button>
 </div>
 
 </div>
@@ -495,19 +396,7 @@ return (
 )}
 
 {/* Barra de filtros */}
-<div
-  style={{
-    display: 'flex',
-    gap: '16px',
-    flexWrap: 'wrap',
-    alignItems: 'flex-end',
-    marginBottom: '24px',
-    padding: '16px',
-    background: 'white',
-    borderRadius: '8px',
-    border: '1px solid #e2e8f0'
-  }}
->
+<div className="bg-white rounded-xl border border-slate-200 p-4 mb-6 flex flex-wrap items-end gap-3">
 <FormField
   label="Buscar"
   className="flex-1 min-w-[220px]"
@@ -582,25 +471,30 @@ return (
 </div>
 {/* Estado de carga */}
 {loading && (
-  <div
-    style={{
-      textAlign: 'center',
-      padding: '48px',
-      color: '#64748b',
-    }}
-  >
-    Cargando empleados...
+  <div className="text-center py-12 text-slate-500">
+    <p>Cargando empleados...</p>
+  </div>
+)}
+
+{/* Sin resultados */}
+{!loading && filteredEmployees.length === 0 && (
+  <div className="text-center py-12 text-slate-500">
+    <p>No se encontraron empleados con los filtros aplicados.</p>
   </div>
 )}
 
 {/* Lista de empleados */}
 {!loading && filteredEmployees.length > 0 && (
-  <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
     {filteredEmployees.map((employee) => (
-      <div
-        key={employee.id}
-        style={{ position: 'relative' }}
-      >
+     <div
+  key={employee.id}
+  style={{
+    position: 'relative',
+    width: 'fit-content',
+    justifySelf: 'start'
+  }}
+>
         <button
           onClick={() => handleDeleteEmployee(employee.id)}
           aria-label="Eliminar empleado"
