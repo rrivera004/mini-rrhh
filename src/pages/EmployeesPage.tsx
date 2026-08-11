@@ -43,9 +43,7 @@ const [newStatus, setNewStatus] = useState<EmployeeStatus>('active');
 const [newRole, setNewRole] = useState<EmployeeRole>('employee');
 const [newPhone, setNewPhone] = useState<string>('');
 const [newAvatarUrl, setNewAvatarUrl] = useState<string>('');
-const [guardarHover, setGuardarHover] = useState(false);
-const [cancelarHover, setCancelarHover] = useState(false);
-const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+
 
 // Simular carga de datos (en clases siguientes conectaremos la API real)
 useEffect(() => {
