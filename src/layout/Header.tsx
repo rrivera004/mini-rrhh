@@ -1,87 +1,101 @@
 // src/layouts/Header.tsx
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import type { User } from '../types';
-import { Link } from 'react-router-dom';
 
 interface HeaderProps {
   user?: User;
   onLogout?: () => void;
 }
 
+const navItems = [
+  { to: '/dashboard', label: 'Dashboard' },
+  { to: '/empleados', label: 'Empleados' },
+];
+
 function Header({ user, onLogout }: HeaderProps) {
+  const { pathname } = useLocation();
+
+
+  const [showWelcome, setShowWelcome] = useState(true);
+
+useEffect(() => {
+  if (!user) return;
+
+  const timer = setTimeout(() => {
+    setShowWelcome(false);
+  }, 5000);
+
+  return () => clearTimeout(timer);
+}, [user]);
+
   return (
-    <header style={{
-      background: '#1e40af',
-      color: 'white',
-      padding: '0 24px',
-      height: '64px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <span style={{ fontSize: '24px' }}>👥</span>
-        <h1 style={{ margin: 0, fontSize: '20px', fontWeight: 600 }}>
-          Mini RRHH
-        </h1>
-      </div>
+    <header className="bg-blue-800 text-white shadow-md">
+      <div className="w-full px-6 py-4 grid grid-cols-[auto_1fr_auto] items-center">
 
-      <nav style={{ display: 'flex', gap: '4px' }}>
-        {[
-          { to: '/dashboard', label: 'Dashboard' },
-          { to: '/empleados', label: 'Empleados' },
-        ].map(item => (
-          <Link
-            key={item.to}
-            to={item.to}
-            style={{
-              color: 'rgba(255,255,255,0.8)',
-              textDecoration: 'none',
-              padding: '6px 12px',
-              borderRadius: '4px',
-              fontSize: '14px',
-              transition: 'background 0.2s',
-            }}
-            onMouseOver={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.15)')}
-            onMouseOut={e => (e.currentTarget.style.background = 'transparent')}
-          >
-            {item.label}
-          </Link>
-        ))}
-      </nav>
-
-      {user && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <span style={{ fontSize: '14px' }}>
-            Bienvenido, <strong>{user.name}</strong>
+        {/* Logo */}
+        <div className="flex items-center gap-3 justify-start">
+          <span className="text-2xl">👥</span>
+          <span className="font-bold text-xl tracking-tight">
+            Mini RRHH
           </span>
-          <span style={{
-            background: '#3b82f6',
-            padding: '2px 8px',
-            borderRadius: '12px',
-            fontSize: '12px',
-            textTransform: 'uppercase',
-          }}>
-            {user.role}
-          </span>
-          {onLogout && (
-            <button
-              onClick={onLogout}
-              style={{
-                background: 'transparent',
-                border: '1px solid rgba(255,255,255,0.5)',
-                color: 'white',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '14px',
-              }}
-            >
-              Cerrar sesión
-            </button>
-          )}
         </div>
-      )}
+
+        {/* Navegación */}
+        {user && (
+          <nav className="hidden sm:flex items-center justify-center gap-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`
+                  px-3 py-1.5 rounded-md text-sm font-medium transition-colors
+                  ${
+                    pathname.startsWith(item.to)
+                      ? 'bg-white/20 text-white'
+                      : 'text-white/75 hover:text-white hover:bg-white/10'
+                  }
+                `}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        )}
+
+        {/* Usuario */}
+        {user && (
+          <div className="flex items-center justify-end gap-3">
+           <div className="flex items-center text-sm text-white">
+  {showWelcome && (
+    <span className="mr-2 font-bold animate-pulse">
+      ✨ Bienvenido, {user.name} ✨
+    </span>
+  )}
+
+  {!showWelcome && (
+    <span className="mr-2 font-bold">
+      {user.name}
+    </span>
+  )}
+</div>
+
+            <span className="text-xs bg-blue-500 px-2 py-0.5 rounded-full uppercase font-medium">
+              {user.role}
+            </span>
+
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="text-sm text-white border border-white/30 hover:border-white/60 px-3 py-1.5 rounded-md transition-colors"
+              >
+                Cerrar sesión
+              </button>
+            )}
+          </div>
+        )}
+
+      </div>
     </header>
   );
 }

@@ -1,9 +1,22 @@
 // src/pages/DashboardPage.tsx
 
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { mockEmployees } from '../utils/mockData';
 
 function DashboardPage() {
+
+  const [showWelcome, setShowWelcome] = useState(true);
+
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setShowWelcome(false);
+  }, 3000);
+
+  return () => clearTimeout(timer);
+}, []);
+
+
   const total = mockEmployees.length;
 
   const active = mockEmployees.filter(
@@ -14,100 +27,74 @@ function DashboardPage() {
     e => e.status === 'on_leave'
   ).length;
 
+  const userName = localStorage.getItem('userName') || 'Usuario';
+
   const stats = [
     {
       label: 'Total empleados',
       value: total,
-      color: '#dbeafe',
-      textColor: '#1e40af'
+      color: 'bg-blue-100',
+      textColor: 'text-blue-800'
     },
     {
       label: 'Activos',
       value: active,
-      color: '#dcfce7',
-      textColor: '#166534'
+      color: 'bg-green-100',
+      textColor: 'text-green-800'
     },
     {
       label: 'En permiso',
       value: onLeave,
-      color: '#fef9c3',
-      textColor: '#854d0e'
+      color: 'bg-yellow-100',
+      textColor: 'text-yellow-800'
     },
   ];
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div className="p-6">
 
-      <h2
-        style={{
-          color: '#1e293b',
-          marginBottom: '24px'
-        }}
-      >
+      <h2 className="text-2xl font-bold text-slate-800 mb-2">
         Dashboard
       </h2>
 
+     <p
+  className={`text-slate-600 mb-6 transition-all duration-700 ${
+    showWelcome
+      ? 'opacity-100 translate-y-0'
+      : 'opacity-100'
+  }`}
+>
+  {showWelcome ? 'Bienvenido, ' : ''}
+  <span className="font-bold text-slate-800">{userName}</span>
+</p>
+
       {/* Tarjetas de estadísticas */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '16px',
-          marginBottom: '32px',
-          flexWrap: 'wrap'
-        }}
-      >
+      <div className="flex flex-col sm:flex-row gap-4 mb-8">
+
         {stats.map(stat => (
           <div
             key={stat.label}
-            style={{
-              background: stat.color,
-              padding: '24px',
-              borderRadius: '12px',
-              minWidth: '160px',
-              flex: 1
-            }}
+            className={`${stat.color} p-6 rounded-xl flex-1 min-w-0 hover:shadow-lg transition-shadow duration-200`}
           >
-            <p
-              style={{
-                margin: '0 0 4px',
-                color: stat.textColor,
-                fontSize: '14px'
-              }}
-            >
+            <p className={`mb-1 ${stat.textColor} text-sm`}>
               {stat.label}
             </p>
 
             <p
-              style={{
-                margin: 0,
-                fontSize: '36px',
-                fontWeight: 700,
-                color: stat.textColor
-              }}
+              className={`text-4xl font-bold ${stat.textColor}`}
             >
               {stat.value}
             </p>
           </div>
         ))}
+
       </div>
 
       {/* Botón para ir a empleados */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '12px'
-        }}
-      >
+      <div className="flex gap-3">
         <Link
           to="/empleados"
-          style={{
-            padding: '10px 20px',
-            background: '#1e40af',
-            color: 'white',
-            borderRadius: '6px',
-            textDecoration: 'none',
-            fontSize: '14px'
-          }}
+          className="px-5 py-2.5 bg-blue-800 hover:bg-blue-900 text-white rounded-md no-underline text-sm transition-colors duration-200"
         >
           Ver empleados →
         </Link>
