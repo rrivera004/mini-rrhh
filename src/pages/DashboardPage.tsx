@@ -74,7 +74,7 @@ useEffect(() => {
         {stats.map(stat => (
           <div
             key={stat.label}
-            className={`${stat.color} p-6 rounded-xl flex-1 min-w-0 hover:shadow-lg transition-shadow duration-200`}
+            className={`${stat.color} p-6 rounded-xl flex-1 min-w-0 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer`}
           >
             <p className={`mb-1 ${stat.textColor} text-sm`}>
               {stat.label}

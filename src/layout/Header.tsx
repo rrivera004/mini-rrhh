@@ -31,7 +31,7 @@ useEffect(() => {
 
   return (
     <header className="bg-blue-800 text-white shadow-md">
-      <div className="w-full px-6 py-4 grid grid-cols-[auto_1fr_auto] items-center">
+      <div className="w-full px-4 py-4 flex flex-wrap items-center justify-between gap-3">
 
         {/* Logo */}
         <div className="flex items-center gap-3 justify-start">
@@ -43,7 +43,7 @@ useEffect(() => {
 
         {/* Navegación */}
         {user && (
-          <nav className="hidden sm:flex items-center justify-center gap-1">
+          <nav className="flex items-center justify-center gap-1 flex-wrap">
             {navItems.map((item) => (
               <Link
                 key={item.to}
@@ -65,7 +65,7 @@ useEffect(() => {
 
         {/* Usuario */}
         {user && (
-          <div className="flex items-center justify-end gap-3">
+          <div className="flex items-center justify-end gap-2 flex-wrap">
            <div className="flex items-center text-sm text-white">
   {showWelcome && (
     <span className="mr-2 font-bold animate-pulse">
