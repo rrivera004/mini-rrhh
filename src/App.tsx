@@ -82,7 +82,7 @@ function App() {
         {/* Redirigir raíz según autenticación */}
         <Route
           path="/"
-          element={<Navigate to="/dashboard" replace />}
+          element={<Navigate to="/login" replace />}
         />
 
         {/* 404 */}

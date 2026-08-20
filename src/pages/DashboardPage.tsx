@@ -1,20 +1,11 @@
 // src/pages/DashboardPage.tsx
 
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import { mockEmployees } from '../utils/mockData';
 
 function DashboardPage() {
 
-  const [showWelcome, setShowWelcome] = useState(true);
-
-useEffect(() => {
-  const timer = setTimeout(() => {
-    setShowWelcome(false);
-  }, 3000);
-
-  return () => clearTimeout(timer);
-}, []);
+ 
 
 
   const total = mockEmployees.length;
@@ -27,7 +18,7 @@ useEffect(() => {
     e => e.status === 'on_leave'
   ).length;
 
-  const userName = localStorage.getItem('userName') || 'Usuario';
+
 
   const stats = [
     {
@@ -57,16 +48,7 @@ useEffect(() => {
         Dashboard
       </h2>
 
-     <p
-  className={`text-slate-600 mb-6 transition-all duration-700 ${
-    showWelcome
-      ? 'opacity-100 translate-y-0'
-      : 'opacity-100'
-  }`}
->
-  {showWelcome ? 'Bienvenido, ' : ''}
-  <span className="font-bold text-slate-800">{userName}</span>
-</p>
+
 
       {/* Tarjetas de estadísticas */}
       <div className="flex flex-col sm:flex-row gap-4 mb-8">
