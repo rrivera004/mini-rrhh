@@ -56,7 +56,7 @@ function DashboardPage() {
         {stats.map(stat => (
           <div
             key={stat.label}
-            className={`${stat.color} p-6 rounded-xl flex-1 min-w-0 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer`}
+            className={`${stat.color} p-6 rounded-xl flex-1 min-w-0 hover:shadow-2xl hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 cursor-pointer`}
           >
             <p className={`mb-1 ${stat.textColor} text-sm`}>
               {stat.label}
