@@ -3,7 +3,8 @@ import type { Employee } from '../types';
 
 interface EmployeeCardProps {
   employee: Employee;
-  onSelect?: (employee: Employee) => void;
+  onSelect: (employee: Employee) => void;
+  onToggleStatus?: (employee: Employee) => void;
 }
 
 const statusConfig = {
@@ -12,30 +13,26 @@ const statusConfig = {
   on_leave: { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'En permiso' },
 };
 
-function EmployeeCard({ employee, onSelect }: EmployeeCardProps) {
+function EmployeeCard({ employee, onSelect, onToggleStatus }: EmployeeCardProps) {
   const { name, position, department, status, avatarUrl } = employee;
   const statusStyle = statusConfig[status];
 
   return (
     <div
-      onClick={() => onSelect?.(employee)}
-      className={`
-        bg-white rounded-xl border border-slate-200 p-5 w-72
+      onClick={() => onSelect(employee)}
+      className="
+        bg-white rounded-xl border border-slate-200 p-5 w-full
         hover:shadow-md hover:border-slate-300
         transition-all duration-200
-        ${onSelect ? 'cursor-pointer' : ''}
-      `}
+        cursor-pointer
+      "
     >
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-lg flex-shrink-0">
+        <div className="h-12 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden text-blue-700 font-semibold text-lg flex-shrink-0">
           {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt={`Avatar de ${name}`}
-              className="w-full h-full object-cover"
-            />
+            <img src={avatarUrl} alt={`Avatar de ${name}`} className="w-full h-full object-cover" />
           ) : (
-            name.charAt(0).toUpperCase()
+            name.charAt(0)
           )}
         </div>
 
@@ -51,7 +48,12 @@ function EmployeeCard({ employee, onSelect }: EmployeeCardProps) {
         </span>
 
         <span
-          className={`text-xs px-2.5 py-1 rounded-full font-medium ${statusStyle.bg} ${statusStyle.text}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleStatus?.(employee);
+          }}
+          title="Click para cambiar el estado"
+          className={`text-xs 2.5 py-1 rounded-full font-medium ${statusStyle.bg} ${statusStyle.text} ${onToggleStatus ? 'cursor-pointer hover:opacity-75' : ''}`}
         >
           {statusStyle.label}
         </span>

@@ -2,12 +2,13 @@
 
 import { Link } from 'react-router-dom';
 import { mockEmployees } from '../utils/mockData';
+import { useAuthStore } from '../store/authStore';
 
 function DashboardPage() {
 
  
 
-
+const userName = useAuthStore(state => state.user?.name || 'Invitado');
   const total = mockEmployees.length;
 
   const active = mockEmployees.filter(
@@ -42,16 +43,18 @@ function DashboardPage() {
   ];
 
   return (
-    <div className="p-6">
+  <div className="p-6">
 
-      <h2 className="text-2xl font-bold text-slate-800 mb-2">
-        Dashboard
-      </h2>
+    <h2 className="text-2xl font-bold text-slate-800 mb-2">
+      Dashboard
+    </h2>
 
+    <p className="text-slate-500 mb-6">
+      Bienvenido, {userName}
+    </p>
 
-
-      {/* Tarjetas de estadísticas */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-8">
+    {/* Tarjetas de estadísticas */}
+    <div className="flex flex-col sm:flex-row gap-4 mb-8">
 
         {stats.map(stat => (
           <div
