@@ -1,5 +1,6 @@
 // src/store/employeeStore.ts
 import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 import type { Employee, CreateEmployeeDto, UpdateEmployeeDto } from '../types';
 import { mockEmployees } from '../utils/mockData';
 
@@ -16,7 +17,8 @@ interface EmployeeState {
   selectEmployee: (employee: Employee | null) => void;
 }
 
-export const useEmployeeStore = create<EmployeeState>((set, get) => ({
+export const useEmployeeStore = create<EmployeeState>()(
+  devtools((set, get) => ({
   employees: [],
   selectedEmployee: null,
   isLoading: false,
@@ -26,7 +28,11 @@ export const useEmployeeStore = create<EmployeeState>((set, get) => ({
     set({ isLoading: true, error: null });
     // Simular carga de API
     await new Promise((resolve) => setTimeout(resolve, 600));
-    set({ employees: mockEmployees, isLoading: false });
+    set(
+  { employees: mockEmployees, isLoading: false },
+  false,
+  "fetchEmployees"
+);
   },
 
   addEmployee: (data: CreateEmployeeDto) => {
@@ -43,33 +49,52 @@ export const useEmployeeStore = create<EmployeeState>((set, get) => ({
     id: Date.now(),
   };
 
-  set(state => ({
+  set(
+  (state) => ({
     employees: [...state.employees, newEmployee],
     error: null
-  }));
+  }),
+  false,
+  "addEmployee"
+);
 
   return true;
 },
 
 updateEmployee: (id: number, data: UpdateEmployeeDto) => {
-  set(state => ({
-    employees: state.employees.map(emp =>
+  set(
+  (state) => ({
+    employees: state.employees.map((emp) =>
       emp.id === id ? { ...emp, ...data } : emp
     )
-  }));
+  }),
+  false,
+  "updateEmployee"
+);
 },
 
 deleteEmployee: (id: number) => {
-  set(state => ({
-    employees: state.employees.filter(emp => emp.id !== id),
-    // Si el empleado eliminado estaba seleccionado, deseleccionarlo
-    selectedEmployee: state.selectedEmployee?.id === id
-      ? null
-      : state.selectedEmployee,
-  }));
+ set(
+  (state) => ({
+    employees: state.employees.filter((emp) => emp.id !== id),
+    selectedEmployee:
+      state.selectedEmployee?.id === id
+        ? null
+        : state.selectedEmployee,
+  }),
+  false,
+  "deleteEmployee"
+);
 },
 
-selectEmployee: (employee: Employee | null) => {
-  set({ selectedEmployee: employee });
+  selectEmployee: (employee: Employee | null) => {
+  set(
+    { selectedEmployee: employee },
+    false,
+    "selectEmployee"
+  );
 },
-}));
+}), {
+  name: 'Employee Store',
+})
+);

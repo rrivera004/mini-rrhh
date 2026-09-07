@@ -28,7 +28,7 @@ function EmployeeCard({ employee, onSelect, onToggleStatus }: EmployeeCardProps)
       "
     >
       <div className="flex items-center gap-3">
-        <div className="h-12 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden text-blue-700 font-semibold text-lg flex-shrink-0">
+        <div className="h-12 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden text-blue-700 font-semibold text-lg shrink-0">
           {avatarUrl ? (
             <img src={avatarUrl} alt={`Avatar de ${name}`} className="w-full h-full object-cover" />
           ) : (

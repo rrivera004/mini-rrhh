@@ -87,7 +87,7 @@ useEffect(() => {
             {onLogout && (
               <button
                 onClick={onLogout}
-                className="text-sm text-white border border-white/30 hover:border-white/60 px-3 py-1.5 rounded-md transition-colors"
+                className="text-sm text-white border border-white/30 hover:border-white/60 px-3 py-1.5 rounded-md transition-colors cursor-pointer"
               >
                 Cerrar sesión
               </button>

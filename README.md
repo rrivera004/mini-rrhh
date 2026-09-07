@@ -72,4 +72,21 @@ export default defineConfig([
   },
 ])
 
+
+
+
+## ¿Debería employeeStore también persistir?
+
+### Sí tendría sentido porque:
+
+- Al recargar la página no se perderían los empleados agregados.
+- Serviría para mantener los cambios mientras todavía no tenemos una API o base de datos.
+- Haría que la información siga disponible aunque se cierre y abra nuevamente la aplicación.
+
+### No tendría sentido porque:
+
+- En un proyecto real los empleados deberían venir de una API o una base de datos.
+- La información guardada en localStorage puede quedar desactualizada.
+- Si varios usuarios hacen cambios, localStorage no sincroniza la información entre ellos.
+
 ```
