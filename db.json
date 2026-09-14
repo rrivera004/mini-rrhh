@@ -10,7 +10,8 @@
       "hireDate": "2022-03-15",
       "status": "active",
       "role": "employee",
-      "avatarUrl": "https://i.pravatar.cc/64?img=1"
+      "avatarUrl": "https://i.pravatar.cc/64?img=1",
+      "phone": "+502 37000515"
     },
     {
       "id": 2,
@@ -19,9 +20,11 @@
       "position": "Gerente de RRHH",
       "department": "Recursos Humanos",
       "salary": 12000,
-      "hireDate": "2019-07-01",
-      "status": "active",
-      "role": "hr"
+      "hireDate": "2026-02-01",
+      "status": "inactive",
+      "role": "hr",
+      "phone": "",
+      "avatarUrl": "https://i.pravatar.cc/64?img=1"
     },
     {
       "id": 3,
@@ -90,6 +93,19 @@
       "role": "employee",
       "phone": "23569812",
       "id": 8
+    },
+    {
+      "name": "Alexander",
+      "email": "alex@gmail.com",
+      "position": "Instructor",
+      "department": "Tecnología",
+      "salary": 15000,
+      "hireDate": "2026-09-14",
+      "role": "employee",
+      "status": "active",
+      "phone": "45588277",
+      "avatarUrl": "",
+      "id": 9
     }
   ]
 }
