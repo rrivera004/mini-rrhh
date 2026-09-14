@@ -15,10 +15,13 @@ export const employeeSchema = z.object({
     .string({ error: 'El cargo es requerido' })
     .min(2, 'Mínimo 2 caracteres'),
 
-  department: z.enum(
+  department: z.preprocess(
+  (value) => (value === '' ? undefined : value),
+  z.enum(
     ['Tecnología', 'Recursos Humanos', 'Finanzas', 'Operaciones', 'Ventas'],
     { error: 'Selecciona un departamento' }
-  ),
+  )
+),
 
     salary: z.coerce
     .number({ error: 'El salario es requerido' })

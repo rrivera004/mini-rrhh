@@ -10,6 +10,7 @@ interface EmployeeFormProps {
   employee?: Employee;       // Si viene, es modo edición
   onSubmit: (data: EmployeeFormData) => Promise<void>;
   onCancel: () => void;
+  onDirtyChange: (isDirty: boolean) => void;
   isLoading?: boolean;
   error?: string | null;     // Error de la mutación (crear/actualizar falló), no de validación
 }
@@ -54,14 +55,16 @@ const inputClass = (hasError: boolean) =>
   }
 `;
 
-function EmployeeForm({ employee, onSubmit, onCancel, isLoading = false, error }: EmployeeFormProps) {
+function EmployeeForm({ employee, onSubmit, onCancel, onDirtyChange, isLoading = false, error }: EmployeeFormProps) {
   const isEditing = !!employee;
 
   const {
 
-        register,
+    register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors, isDirty },
   } = useForm<EmployeeFormInput, unknown, EmployeeFormData>({
     resolver: zodResolver(employeeSchema),
@@ -69,7 +72,7 @@ function EmployeeForm({ employee, onSubmit, onCancel, isLoading = false, error }
       name: '',
       email: '',
       position: '',
-      department: 'Tecnología',
+      department: '',
       salary: 0,
       hireDate: new Date().toISOString().split('T')[0],
       role: 'employee',
@@ -79,6 +82,22 @@ function EmployeeForm({ employee, onSubmit, onCancel, isLoading = false, error }
     },
   });
 
+  useEffect(() => {
+  onDirtyChange(isDirty);
+}, [isDirty, onDirtyChange]);
+
+
+
+  const watchedName = watch('name');
+  const watchedPosition = watch('position');
+  const watchedEmail = watch('email');
+
+
+  useEffect(() => {
+  if (watchedEmail?.includes('@empresa.com')) {
+    setValue('department', 'Tecnología');
+  }
+}, [watchedEmail, setValue]);
 
   // Si viene un empleado (modo edición), poblar el formulario
 useEffect(() => {
@@ -100,6 +119,11 @@ useEffect(() => {
 
 return (
   <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
+
+
+        <div className="bg-blue-50 border border-blue-100 rounded-lg px-4 py-3 text-sm text-slate-700">
+      {watchedName || 'Nombre'} — {watchedPosition || 'Cargo'}
+    </div>
 
 
     {error && (
@@ -241,7 +265,13 @@ return (
 
         <button
       type="button"
-      onClick={onCancel}
+      onClick={() => {
+  if (isDirty && !window.confirm('¿Estás seguro de cancelar? Tienes cambios sin guardar.')) {
+    return;
+  }
+
+  onCancel();
+}}
       disabled={isLoading}
       className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 border border-slate-300 hover:border-slate-400 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
     >

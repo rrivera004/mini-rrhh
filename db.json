@@ -74,13 +74,14 @@
       "name": "Rolandito",
       "email": "rriverav2@miumg.edu.gt",
       "position": "Analista I",
-      "department": "Tecnología",
+      "department": "Operaciones",
       "salary": 6500,
       "hireDate": "2026-08-01",
       "status": "active",
       "role": "employee",
       "phone": "37000515",
-      "id": 7
+      "id": 7,
+      "avatarUrl": ""
     },
     {
       "name": "DANIEL",

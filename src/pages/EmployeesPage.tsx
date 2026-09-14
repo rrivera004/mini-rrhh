@@ -54,6 +54,7 @@ function EmployeesPage() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | undefined>();
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [formIsDirty, setFormIsDirty] = useState(false);
 
   // Memoizamos el handler para no recrearlo en cada render
   const handleEmployeeSelect = useCallback((employee: Employee) => {
@@ -273,12 +274,19 @@ function EmployeesPage() {
     <Modal
       isOpen={modalOpen}
       title={editingEmployee ? `Editar: ${editingEmployee.name}` : 'Nuevo empleado'}
-      onClose={() => setModalOpen(false)}
+      onClose={() => {
+  if (formIsDirty && !window.confirm('¿Estás seguro de cancelar? Tienes cambios sin guardar.')) {
+    return;
+  }
+
+  setModalOpen(false);
+}}
     >
       <EmployeeForm
         employee={editingEmployee}
         onSubmit={handleSubmit}
         onCancel={() => setModalOpen(false)}
+        onDirtyChange={setFormIsDirty}
         isLoading={createEmployee.isPending || updateEmployee.isPending}
         error={submitError}
       />
