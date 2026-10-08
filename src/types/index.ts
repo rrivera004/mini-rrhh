@@ -30,14 +30,18 @@ export type UpdateEmployeeDto = Partial<CreateEmployeeDto>;
  
 // --- Tipos de autenticación ---
  
-export interface User {
-  id: number;
-  name: string;
+// --- Tipos de autenticación ---
+
+export interface AuthUser {
+  id: string;
+  firstName: string;
+  lastName: string;
   email: string;
   role: EmployeeRole;
-  token: string;
+  accessToken: string;
+  refreshToken: string;
 }
- 
+
 export interface LoginCredentials {
   email: string;
   password: string;

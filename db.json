@@ -107,6 +107,32 @@
       "phone": "45588277",
       "avatarUrl": "",
       "id": 9
+    },
+    {
+      "name": "jjjjjjjjj",
+      "email": "jjjjj@gmail.com",
+      "position": "Gerente de RRHH",
+      "department": "Tecnología",
+      "salary": 8,
+      "hireDate": "2027-03-04",
+      "role": "employee",
+      "status": "active",
+      "phone": "",
+      "avatarUrl": "",
+      "id": 10
+    },
+    {
+      "name": "ahbasasv",
+      "email": "ansvnasnv@empresa.com",
+      "position": "limpieza",
+      "department": "Tecnología",
+      "salary": 3500,
+      "hireDate": "2026-10-08",
+      "role": "employee",
+      "status": "active",
+      "phone": "",
+      "avatarUrl": "",
+      "id": 11
     }
   ]
 }

@@ -1,41 +1,28 @@
 // src/store/authStore.ts
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { User, LoginCredentials } from '../types';
+import type { AuthUser, LoginCredentials } from '../types';
+import toast from 'react-hot-toast';
+import { authService,  } from '../service/authService';
+import { extractErrorMessage } from '../utils/errorHandler';
 
 interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
 
   login: (credentials: LoginCredentials) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   clearError: () => void;
+  refreshSession: () => Promise<string | null>;  
 }
+let refreshInFlight: Promise<string | null> | null = null;
 
-// Datos de usuarios demo (en clase 9 esto vendrá del API real)
-const DEMO_USERS: Record<string, User> = {
-  'admin@empresa.com': {
-    id: 1, name: 'Roberto Silva',
-    email: 'admin@empresa.com', role: 'admin',
-    token: 'mock-token-admin-xyz',
-  },
-  'rrhh@empresa.com': {
-    id: 2, name: 'Carlos Martinez',
-    email: 'rrhh@empresa.com', role: 'hr',
-    token: 'mock-token-hr-xyz',
-  },
-  'empleado@empresa.com': {
-    id: 3, name: 'Ana Garcia',
-    email: 'empleado@empresa.com', role: 'employee',
-    token: 'mock-token-employee-xyz',
-  },
-};
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       isAuthenticated: false,
       isLoading: false,
@@ -44,44 +31,61 @@ export const useAuthStore = create<AuthState>()(
       login: async (credentials: LoginCredentials) => {
         set({ isLoading: true, error: null });
 
-        // Simular latencia de red
-        await new Promise((resolve) => setTimeout(resolve, 800));
+        try {
+          const user = await authService.login(credentials);
+          set({ user, isAuthenticated: true, isLoading: false });
+          toast.success(`Bienvenido, ${user.firstName} 👋`);
+        } catch (err: unknown) {
+          // Mensaje en español según error.code (INVALID CREDENTIALS, red caída...)
+          set({ error: extractErrorMessage(err), isLoading: false });
+        }
+      },
 
-        const demoUser = DEMO_USERS[credentials.email];
+      logout: async () => {
+        const refreshToken = get().user?.refreshToken;
 
-if (demoUser && credentials.password === '123456') {
-  set({
-    user: demoUser,
-    isAuthenticated: true,
-    isLoading: false,
-    error: null,
-  });
-} else {
-  set({
-    isLoading: false,
-    error: 'Credenciales incorrectas. Usa cualquier email demo con contraseña: 123456',
-  });
-}
-},
+        if (refreshToken) {
+          await authService.logout(refreshToken);
+          toast.success('Sesión cerrada correctamente.');
+        }
 
+        set({ user: null, isAuthenticated: false, error: null });
+      },
 
-logout: () => {
-  set({
-    user: null,
-    isAuthenticated: false,
-    error: null,
-  });
-},
+      clearError: () => set({ error: null }),
 
-clearError: () => set({ error: null }),
-}),
-{
-  name: 'auth-storage',
-  // Solo persistir user e isAuthenticated (no isLoading ni error)
-  partialize: (state) => ({
-    user: state.user,
-    isAuthenticated: state.isAuthenticated,
-  }),
-}
-)
+      refreshSession: async () => {
+        const refreshToken = get().user?.refreshToken;
+
+        if (!refreshToken) {
+          return null;
+        }
+
+        refreshInFlight = authService
+          .refresh(refreshToken)
+          .then((user) => {
+            set({ user, isAuthenticated: true });
+            return user.accessToken;
+          })
+          .catch(() => {
+            set({ user: null, isAuthenticated: false });
+            toast.error('Tu sesión ha expirado. Inicia sesión de nuevo.');
+            return null;
+          })
+          .finally(() => {
+            refreshInFlight = null;
+          });
+
+        return refreshInFlight;
+      },
+    }),
+    {
+      name: 'auth-storage',
+      // Solo persistir user e isAuthenticated (no isLoading ni error)
+      partialize: (state) => ({
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    }
+  )
 );

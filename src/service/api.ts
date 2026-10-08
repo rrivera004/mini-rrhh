@@ -1,5 +1,6 @@
 // src/services/api.ts
 import axios from 'axios';
+import { notifyGlobalError } from '../utils/errorHandler';
 
 // Reemplaza con la URL del API que provee el docente cuando esté disponible.
 // Mientras tanto, usaremos JSON Server en local.
@@ -37,6 +38,7 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    notifyGlobalError(error);
     if (error.response?.status === 401) {
       // Token expirado o inválido: limpiamos la sesión
       localStorage.removeItem('auth-storage');
