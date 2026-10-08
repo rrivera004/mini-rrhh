@@ -83,12 +83,7 @@ function LoginPage() {
 
         </form>
 
-        <div className="mt-4 text-xs text-slate-400 text-center">
-          <p>Email demo: admin@empresa.com | rrhh@empresa.com | empleado@empresa.com</p>
-          <p className="mt-1">
-            Contraseña para todos: <strong>123456</strong>
-          </p>
-        </div>
+       
 
       </div>
     </div>
