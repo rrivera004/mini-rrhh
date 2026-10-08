@@ -1,10 +1,10 @@
 // src/layouts/Header.tsx
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import type { User } from '../types';
+import type { AuthUser } from '../types';
 
 interface HeaderProps {
-  user?: User;
+  user?: AuthUser;
   onLogout?: () => void;
 }
 
@@ -69,13 +69,13 @@ useEffect(() => {
            <div className="flex items-center text-sm text-white">
   {showWelcome && (
     <span className="mr-2 font-bold animate-pulse">
-      ✨ Bienvenido, {user.name} ✨
+      ✨ Bienvenido, {user.firstName} {user.lastName} ✨
     </span>
   )}
 
   {!showWelcome && (
     <span className="mr-2 font-bold">
-      {user.name}
+      {user.firstName} {user.lastName}
     </span>
   )}
 </div>
