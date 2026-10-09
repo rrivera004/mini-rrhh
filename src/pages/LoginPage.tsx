@@ -74,14 +74,30 @@ function LoginPage() {
           )}
 
           <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-3 bg-brand-800 hover:bg-brand-700 disabled:bg-brand-800/50 text-white font-semibold rounded-lg transition-colors"
-          >
-            {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
-          </button>
+  type="submit"
+  disabled={isLoading}
+  className="w-full py-3 bg-brand-800 hover:bg-brand-700 disabled:bg-brand-800/50 text-white font-semibold rounded-lg transition-colors"
+>
+  {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+</button>
 
-        </form>
+<div className="mt-6 rounded-lg border border-slate-200 bg-white p-4 text-sm shadow-sm">
+  <p className="mb-2 font-semibold text-slate-700">
+    🔑 Datos para ingresar
+  </p>
+
+  <p className="text-slate-600">
+    <span className="font-medium">Correo:</span>{" "}
+    lapiezavivera@miumg.edu.gt
+  </p>
+
+  <p className="text-slate-600">
+    <span className="font-medium">Contraseña:</span>{" "}
+    Roni123654
+  </p>
+</div>
+
+</form>
 
        
 

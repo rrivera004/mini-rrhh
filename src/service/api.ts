@@ -4,7 +4,7 @@ import { notifyGlobalError } from '../utils/errorHandler';
 
 // Reemplaza con la URL del API que provee el docente cuando esté disponible.
 // Mientras tanto, usaremos JSON Server en local.
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://mini-rrhh-1.onrender.com';
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
