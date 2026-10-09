@@ -90,3 +90,6 @@ export default defineConfig([
 - Si varios usuarios hacen cambios, localStorage no sincroniza la información entre ellos.
 
 ```
+## Sitio desplegado
+
+🌐 **Mini RRHH:** https://mini-rrhh.vercel.app
