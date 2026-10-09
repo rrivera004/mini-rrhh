@@ -81,21 +81,7 @@ function LoginPage() {
   {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
 </button>
 
-<div className="mt-6 rounded-lg border border-slate-200 bg-white p-4 text-sm shadow-sm">
-  <p className="mb-2 font-semibold text-slate-700">
-    🔑 Datos para ingresar
-  </p>
 
-  <p className="text-slate-600">
-    <span className="font-medium">Correo:</span>{" "}
-    lapiezarivera@miumg.edu.gt
-  </p>
-
-  <p className="text-slate-600">
-    <span className="font-medium">Contraseña:</span>{" "}
-    Roni123654
-  </p>
-</div>
 
 </form>
 
