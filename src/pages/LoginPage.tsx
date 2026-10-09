@@ -88,7 +88,7 @@ function LoginPage() {
 
   <p className="text-slate-600">
     <span className="font-medium">Correo:</span>{" "}
-    lapiezavivera@miumg.edu.gt
+    lapiezarivera@miumg.edu.gt
   </p>
 
   <p className="text-slate-600">
