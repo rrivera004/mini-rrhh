@@ -4,8 +4,9 @@ import { useAuthStore } from '../store/authStore';
 import { notifyGlobalError } from '../utils/errorHandler';
 
 // URL base de API-RH (instancia en Cloud Run), sin /api/v1.
-const AUTH_BASE_URL =
-  import.meta.env.VITE_AUTH_API_URL ||  'https://api-g06-39462701205.us-central1.run.app';;
+
+const AUTH_BASE_URL = import.meta.env.VITE_AUTH_API_URL;
+
 
 export const authApiClient = axios.create({
   baseURL: AUTH_BASE_URL,
