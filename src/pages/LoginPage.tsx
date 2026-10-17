@@ -67,15 +67,11 @@ function LoginPage() {
             />
           </div>
 
-          
-{error && (
-  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-    {typeof error === 'string'
-      ? error
-      : 'No se pudo iniciar sesión. Verifica tus credenciales e inténtalo de nuevo.'}
-  </div>
-)}
-
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
 
           <button
   type="submit"

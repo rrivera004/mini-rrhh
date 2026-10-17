@@ -17,6 +17,7 @@ export function useEmployees(filters: EmployeeFilters = {}) {
     return useQuery({
         queryKey: employeeKeys.list(filters),
         queryFn: () => employeeService.getAll(filters),
+        placeholderData: (previousData) => previousData,
     });
 }
 

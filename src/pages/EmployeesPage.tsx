@@ -1,14 +1,17 @@
 // src/pages/EmployeesPage.tsx
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import type { Employee, Department, EmployeeStatus } from '../types';
 import EmployeeCard from '../components/EmployeeCard';
 import StatsBadge from '../components/StatsBadge';
 import FormField from '../components/FormField';
 import Modal from '../components/Modal';
 import EmployeeForm from '../components/EmployeeForm';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useEmployees, useCreateEmployee, useUpdateEmployee, useDeleteEmployee } from '../hooks/useEmployees';
 import type { EmployeeFormData } from '../schemas/employeeSchema';
+
+import Pagination from '../components/Pagination';
+import { useDebounce } from '../hooks/useDebounce';
 
 const formFieldClass = 'w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent';
 
@@ -21,11 +24,75 @@ const nextStatus: Record<EmployeeStatus, EmployeeStatus> = {
 
 
 function EmployeesPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   // Estado de los filtros — esto sigue siendo estado local (de la UI), no del servidor
-  const [search, setSearch] = useState<string>('');
-  const [selectedDepartment, setSelectedDepartment] = useState<Department | ''>('');
-  const [selectedStatus, setSelectedStatus] = useState<EmployeeStatus | ''>('');
+  
+  const [search, setSearch] = useState<string>(
+  searchParams.get('search') ?? ''
+);
+
+const [selectedDepartment, setSelectedDepartment] = useState<Department | ''>(
+  (searchParams.get('department') as Department) || ''
+);
+
+const [selectedStatus, setSelectedStatus] = useState<EmployeeStatus | ''>(
+  (searchParams.get('status') as EmployeeStatus) || ''
+);
+
+const [page, setPage] = useState<number>(
+  Math.max(1, Number(searchParams.get('page')) || 1)
+);
+
+const [pageSize] = useState<number>(10);
+
+const debouncedSearch = useDebounce(search, 300);
+
+
+
+const updateUrlParams = useCallback(() => {
+  const params = new URLSearchParams(searchParams);
+
+  if (search.trim()) {
+    params.set('search', search.trim());
+  } else {
+    params.delete('search');
+  }
+
+  if (selectedDepartment) {
+    params.set('department', selectedDepartment);
+  } else {
+    params.delete('department');
+  }
+
+  if (selectedStatus) {
+    params.set('status', selectedStatus);
+  } else {
+    params.delete('status');
+  }
+
+  if (page > 1) {
+    params.set('page', String(page));
+  } else {
+    params.delete('page');
+  }
+
+  setSearchParams(params, { replace: true });
+}, [
+  search,
+  selectedDepartment,
+  selectedStatus,
+  page,
+  searchParams,
+  setSearchParams,
+]);
+
+
+useEffect(() => {
+  updateUrlParams();
+}, [updateUrlParams]);
+
   const navigate = useNavigate();
+
 
   // Estado del SERVIDOR: la lista de empleados, filtrada. TanStack Query se encarga
   // de pedirla, cachearla y mantenerla sincronizada — no useEffect ni useState local.
@@ -36,22 +103,38 @@ function EmployeesPage() {
   error: queryError,
   refetch,
 } = useEmployees({
-  search: search || undefined,
+  search: debouncedSearch || undefined,
   department: selectedDepartment || undefined,
   status: selectedStatus || undefined,
+  page,
+  pageSize,
 });
   const employees = data?.data || [];
 
   // Segunda query, sin filtros — las estadísticas son sobre el TOTAL de empleados,
   // no sobre el filtro activo, así que necesitamos su propia lista completa cacheada aparte.
-  const { data: allData } = useEmployees({});
-  const allEmployees = useMemo(() => allData?.data ?? [], [allData]);
-  const totalEmployees = allEmployees.length;
-  const activeEmployees = allEmployees.filter(emp => emp.status === 'active').length;
+  const { data: allData } = useEmployees({ page: 1, pageSize: 1000 });
+
+const allEmployees = useMemo(
+  () => allData?.data ?? [],
+  [allData]
+);
+
+const totalEmployees = allData?.total ?? 0;
+
+const activeEmployees = allEmployees.filter(
+  emp => emp.status === 'active'
+).length;
+
+const onLeaveEmployees = allEmployees.filter(
+  emp => emp.status === 'on_leave'
+).length;
+
+const inactiveEmployees = allEmployees.filter(
+  emp => emp.status === 'inactive'
+).length;
 
 
-    const onLeaveEmployees = allEmployees.filter(emp => emp.status === 'on_leave').length;
-  const inactiveEmployees = allEmployees.filter(emp => emp.status === 'inactive').length;
   const createEmployee = useCreateEmployee();
   const updateEmployee = useUpdateEmployee();
   const deleteEmployee = useDeleteEmployee();
@@ -284,6 +367,17 @@ function EmployeesPage() {
         </div>
 
          )}
+
+
+         {/* Paginación */}
+{!isLoading && !isError && data && (
+  <Pagination
+    currentPage={data.page}
+    totalPages={data.totalPages}
+    onPageChange={setPage}
+    isLoading={isLoading}
+  />
+)}
       
 
 {/* Modal de creación/edición — React Hook Form + Zod */}
