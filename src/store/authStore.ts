@@ -5,6 +5,7 @@ import type { AuthUser, LoginCredentials } from '../types';
 import toast from 'react-hot-toast';
 import { authService,  } from '../service/authService';
 import { extractErrorMessage } from '../utils/errorHandler';
+import { useEmployeeFiltersStore } from './employeeFiltersStore';
 
 interface AuthState {
   user: AuthUser | null;
@@ -41,16 +42,27 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      logout: async () => {
-        const refreshToken = get().user?.refreshToken;
+    logout: async () => {
+  const refreshToken = get().user?.refreshToken;
 
-        if (refreshToken) {
-          await authService.logout(refreshToken);
-          toast.success('Sesión cerrada correctamente.');
-        }
+  try {
+    if (refreshToken) {
+      await authService.logout(refreshToken);
+    }
+  } catch (error) {
+    console.error('Error al cerrar sesión en el servidor:', error);
+  } finally {
+    useEmployeeFiltersStore.getState().resetFilters();
 
-        set({ user: null, isAuthenticated: false, error: null });
-      },
+    set({
+      user: null,
+      isAuthenticated: false,
+      error: null,
+    });
+
+    toast.success('Sesión cerrada correctamente.');
+  }
+},
 
       clearError: () => set({ error: null }),
 

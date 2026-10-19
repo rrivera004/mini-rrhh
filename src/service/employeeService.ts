@@ -3,7 +3,13 @@ import { apiClient } from './api';
 import type { Employee, CreateEmployeeDto, UpdateEmployeeDto, PaginatedResponse } from '../types';
 
 export interface EmployeeFilters {
-  search?: string; department?: string; status?: string; page?: number; pageSize?: number;
+  search?: string;
+  department?: string;
+  status?: string;
+  page?: number;
+  pageSize?: number;
+  sort?: string;
+  order?: 'asc' | 'desc';
 }
 
 export const employeeService = {
@@ -15,6 +21,8 @@ export const employeeService = {
     if (filters.status) params.set('status', filters.status);
     if (filters.page) params.set('_page', String(filters.page));
     if (filters.pageSize) params.set('_limit', String(filters.pageSize));
+    if (filters.sort) params.set('_sort', filters.sort);
+    if (filters.order) params.set('_order', filters.order);
 
 
         const response = await apiClient.get<Employee[]>(`/employees?${params}`);

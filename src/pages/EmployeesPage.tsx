@@ -9,6 +9,8 @@ import EmployeeForm from '../components/EmployeeForm';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useEmployees, useCreateEmployee, useUpdateEmployee, useDeleteEmployee } from '../hooks/useEmployees';
 import type { EmployeeFormData } from '../schemas/employeeSchema';
+import { useEmployeeFiltersStore } from '../store/employeeFiltersStore';
+
 
 import Pagination from '../components/Pagination';
 import { useDebounce } from '../hooks/useDebounce';
@@ -24,24 +26,61 @@ const nextStatus: Record<EmployeeStatus, EmployeeStatus> = {
 
 
 function EmployeesPage() {
+
+  const allowedSortColumns = [
+  'name',
+  'department',
+  'position',
+  'salary',
+  'hireDate',
+  'status',
+] as const;
+
+type SortColumn = (typeof allowedSortColumns)[number];
+type SortOrder = 'asc' | 'desc';
+
+  
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const sortParam = searchParams.get('sort');
+const orderParam = searchParams.get('order');
+
+const sort: SortColumn | undefined = allowedSortColumns.includes(
+  sortParam as SortColumn,
+)
+  ? (sortParam as SortColumn)
+  : undefined;
+
+const order: SortOrder = orderParam === 'desc' ? 'desc' : 'asc';
+
   // Estado de los filtros — esto sigue siendo estado local (de la UI), no del servidor
   
   const [search, setSearch] = useState<string>(
   searchParams.get('search') ?? ''
 );
 
-const [selectedDepartment, setSelectedDepartment] = useState<Department | ''>(
-  (searchParams.get('department') as Department) || ''
-);
+const {
+  department: selectedDepartment,
+  status: selectedStatus,
+  setDepartment: setSelectedDepartment,
+  setStatus: setSelectedStatus,
+} = useEmployeeFiltersStore();
 
-const [selectedStatus, setSelectedStatus] = useState<EmployeeStatus | ''>(
-  (searchParams.get('status') as EmployeeStatus) || ''
-);
 
-const [page, setPage] = useState<number>(
-  Math.max(1, Number(searchParams.get('page')) || 1)
-);
+const storedPage = useEmployeeFiltersStore((state) => state.page);
+const savePage = useEmployeeFiltersStore((state) => state.setPage);
+
+const page = Math.max(1, Number(searchParams.get('page')) || storedPage || 1);
+
+const setPage = (newPage: number) => {
+  savePage(newPage);
+
+  const params = new URLSearchParams(searchParams);
+  if (newPage > 1) params.set('page', String(newPage));
+  else params.delete('page');
+
+  setSearchParams(params, { replace: true });
+};
 
 const [pageSize] = useState<number>(10);
 
@@ -70,11 +109,13 @@ const updateUrlParams = useCallback(() => {
     params.delete('status');
   }
 
-  if (page > 1) {
-    params.set('page', String(page));
-  } else {
-    params.delete('page');
-  }
+ if (page > 1) {
+  params.set('page', String(page));
+} else {
+  params.delete('page');
+}
+
+savePage(page);
 
   setSearchParams(params, { replace: true });
 }, [
@@ -84,6 +125,7 @@ const updateUrlParams = useCallback(() => {
   page,
   searchParams,
   setSearchParams,
+  savePage,
 ]);
 
 
@@ -103,13 +145,50 @@ useEffect(() => {
   error: queryError,
   refetch,
 } = useEmployees({
+
+  
   search: debouncedSearch || undefined,
   department: selectedDepartment || undefined,
   status: selectedStatus || undefined,
   page,
   pageSize,
+  sort,
+  order,
 });
-  const employees = data?.data || [];
+
+const employees: Employee[] = [...(data?.data ?? [])];
+
+if (sort) {
+  employees.sort((a, b) => {
+    const valueA = String(a[sort as keyof Employee] ?? '');
+    const valueB = String(b[sort as keyof Employee] ?? '');
+
+    const comparison = valueA.localeCompare(valueB, 'es', {
+      sensitivity: 'base',
+      numeric: true,
+    });
+
+    return order === 'desc' ? -comparison : comparison;
+  });
+}
+
+
+  console.log('Datos de paginación:', {
+  total: data?.total,
+  page: data?.page,
+  totalPages: data?.totalPages,
+  empleados: employees.length,
+});
+
+  useEffect(() => {
+  const totalPages = data?.totalPages;
+
+  if (totalPages && page > totalPages) {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', String(totalPages));
+    setSearchParams(params, { replace: true });
+  }
+}, [data?.totalPages, page, searchParams, setSearchParams]);
 
   // Segunda query, sin filtros — las estadísticas son sobre el TOTAL de empleados,
   // no sobre el filtro activo, así que necesitamos su propia lista completa cacheada aparte.
@@ -279,6 +358,60 @@ const inactiveEmployees = allEmployees.filter(
           ))}
         </select>
       </FormField>
+
+
+
+      
+{/* Ordenar empleados */}
+<FormField label="Ordenar por" className="min-w-[180px]">
+  <select
+    value={sort ?? ''}
+    onChange={(e) => {
+      const params = new URLSearchParams(searchParams);
+      if (e.target.value) {
+        params.set('sort', e.target.value);
+      } else {
+        params.delete('sort');
+      }
+      params.set('order', order);
+      params.delete('page');
+      setSearchParams(params, { replace: true });
+      savePage(1);
+    }}
+    className={formFieldClass}
+  >
+    <option value="">Sin ordenar</option>
+    <option value="name">Nombre</option>
+    <option value="department">Departamento</option>
+    <option value="position">Cargo</option>
+    <option value="salary">Salario</option>
+    <option value="hireDate">Fecha de ingreso</option>
+    <option value="status">Estado</option>
+  </select>
+</FormField>
+
+{/* Dirección del orden */}
+<FormField label="Dirección" className="min-w-[150px]">
+  <select
+    value={order}
+    onChange={(e) => {
+      const params = new URLSearchParams(searchParams);
+      params.set('order', e.target.value);
+      params.delete('page');
+      setSearchParams(params, { replace: true });
+      savePage(1);
+    }}
+    className={formFieldClass}
+  >
+    <option value="asc">Ascendente</option>
+    <option value="desc">Descendente</option>
+  </select>
+</FormField>
+
+
+
+
+
 
       {/* Botón limpiar filtros */}
       {(search || selectedDepartment || selectedStatus) && (
