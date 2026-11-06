@@ -34,6 +34,15 @@ const { data: employee, isLoading, isError } = useEmployee(id);
     );
   }
 
+  const departmentData = employee.department as unknown;
+
+const departmentName =
+  typeof departmentData === 'object' &&
+  departmentData !== null &&
+  'name' in departmentData
+    ? String(departmentData.name)
+    : String(departmentData ?? '');
+
   return (
   <div className="min-h-full bg-slate-50 p-6">
     <button
@@ -41,6 +50,14 @@ const { data: employee, isLoading, isError } = useEmployee(id);
       className="mb-6 inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-lg shadow-sm cursor-pointer transition-all duration-200 hover:bg-slate-100 hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5"
     >
       ← Volver
+    </button>
+
+
+        <button
+      onClick={() => navigate(`/empleados/${employee.id}/expediente`)}
+      className="mb-6 ml-3 px-4 py-2.5 bg-blue-700 hover:bg-blue-800 text-white rounded-lg shadow-sm transition-colors"
+    >
+      📁 Ver expediente
     </button>
 
     <div className="max-w-3xl bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -73,11 +90,11 @@ const { data: employee, isLoading, isError } = useEmployee(id);
           </div>
 
           <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
-            <p className="text-sm text-slate-500 mb-1">Departamento</p>
-            <p className="font-semibold text-slate-900">
-              {employee.department}
-            </p>
-          </div>
+  <p className="text-sm text-slate-500 mb-1">Departamento</p>
+  <p className="font-semibold text-slate-900">
+    {departmentName}
+  </p>
+</div>
 
           <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
             <p className="text-sm text-slate-500 mb-1">Salario mensual</p>

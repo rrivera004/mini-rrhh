@@ -18,6 +18,7 @@ import EmployeesPage from './pages/EmployeesPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuthStore } from './store/authStore';
 import EmployeeDetailPage from './pages/EmployeeDetailPage';
+import EmployeeExpedientePage from './pages/EmployeeExpedientePage';
 import NotFoundPage from './pages/NotFoundPage';
 
 // Layout con Header PARA páginas autenticadas
@@ -84,6 +85,18 @@ function App() {
   element={
     <ProtectedRoute>
       <EmployeeDetailPage />
+    </ProtectedRoute>
+  }
+/>
+
+
+<Route
+  path="/empleados/:id/expediente"
+  element={
+    <ProtectedRoute>
+      <AppLayout>
+        <EmployeeExpedientePage />
+      </AppLayout>
     </ProtectedRoute>
   }
 />

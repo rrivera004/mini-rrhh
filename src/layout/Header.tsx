@@ -17,6 +17,18 @@ function Header({ user, onLogout }: HeaderProps) {
   const { pathname } = useLocation();
 
 
+  const roleData = user?.role as unknown;
+
+const roleLabel =
+  typeof roleData === 'object' && roleData !== null
+    ? 'name' in roleData
+      ? String(roleData.name)
+      : 'code' in roleData
+        ? String(roleData.code)
+        : 'Usuario'
+    : String(roleData ?? '');
+
+
   const [showWelcome, setShowWelcome] = useState(true);
 
 useEffect(() => {
@@ -81,7 +93,7 @@ useEffect(() => {
 </div>
 
             <span className="text-xs bg-blue-500 px-2 py-0.5 rounded-full uppercase font-medium">
-              {user.role}
+              {roleLabel}
             </span>
 
             {onLogout && (

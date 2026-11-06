@@ -22,7 +22,7 @@ apiClient.interceptors.request.use((config) => {
   if (authData) {
     try {
       const parsed = JSON.parse(authData);
-      const token = parsed?.state?.user?.token;
+      const token = parsed?.state?.user?.accessToken;
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
